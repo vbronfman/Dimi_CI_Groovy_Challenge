@@ -1,0 +1,4 @@
+flask
+redis
+pytest == 3.0.6
+pytest-flask == 0.10.0
