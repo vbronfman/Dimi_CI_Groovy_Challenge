@@ -1,4 +1,4 @@
 #!bash
 
-echo Test
+echo Test on commit
 sleep ${timeout=3}
