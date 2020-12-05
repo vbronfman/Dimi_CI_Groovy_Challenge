@@ -47,6 +47,7 @@ You can either git merge master or git rebase master.
 */
 
  if (env.BRANCH_NAME == 'master') {
+   echo 'branch - master'
    sh 'git checkout feature'
  
    //sh 'git merge master'
