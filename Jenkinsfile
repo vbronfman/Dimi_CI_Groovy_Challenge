@@ -14,7 +14,7 @@
 def commitHash
 
 
-def myCmdExec (String cmd)
+def myCmdExec (String[] cmd)
 {
   //def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
   def process = cmd.execute()
