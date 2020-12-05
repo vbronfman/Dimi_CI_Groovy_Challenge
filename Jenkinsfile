@@ -115,7 +115,6 @@ echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to d
 echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
 //if ($branch == 'master') 
-{
    echo 'branch - master'
    //sh 'git checkout feature'
    //'git checkout feature'.execute().text
@@ -152,9 +151,6 @@ echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
            sh "git push origin master"
 
         }
-
-  
-}
 }
 
 
