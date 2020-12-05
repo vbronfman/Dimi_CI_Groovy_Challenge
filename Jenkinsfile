@@ -50,7 +50,7 @@ You can either git merge master or git rebase master.
 
 sh 'printenv'
 
- if (env.BRANCH_NAME == 'master') {
+// if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
    sh 'git checkout feature'
  
@@ -60,7 +60,7 @@ sh 'printenv'
       //if merge failed 
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
    }
-   else {
+   //else {
         sh 'git commit -am "Merged master branch to feature'
 
         test() //custom test to run
@@ -68,9 +68,8 @@ sh 'printenv'
            sh "git push origin master"
         }
 
-   }
- }
-}
+  }
+//}
 
 // This limits build concurrency to 1 per branch
 //  properties([disableConcurrentBuilds()])
