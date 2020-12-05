@@ -102,6 +102,10 @@ stage('Prepare') {
     echo "Commit ID = $commitHash"
     branch = scmVars.GIT_BRANCH
     echo "branch $branch"
+    //for debug only
+    def cmd = ['git',  'status', '-uno', '|', 'grep', 'Your branch is up to date with ']
+def exit_status=	myCmdExec (cmd)
+//end of for debug only
     
 }
 
