@@ -1,10 +1,13 @@
 #!/usr/bin/env groovy
 // Jenkinsfile (Scripted Pipeline)
+
+def commitHash
+
 node ('master'){ // node/agent
 
 def commit_id
  def scmVars 
-  def commitHash
+  
   def branch
 
 stage('Prepare') {
@@ -122,7 +125,7 @@ if( 1 == 1)
 }
 
 def test() {
-    echo "Start"
+    echo "Start test "
     //prints the hash of the current git commit and waits ~3 min
     echo "prints the hash of the current git commit and waits ~3 min"
     /*
