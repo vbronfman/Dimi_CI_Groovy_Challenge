@@ -3,17 +3,9 @@
 
 def commitHash
 
-
-
-
-
-
-
-
-
-def test( ) {
+def test( ) { //prints the hash of the current git commit and waits ~3 min It is expected to always pass 
     echo "Start test "
-    //prints the hash of the current git commit and waits ~3 min
+    
     echo "prints the hash of the current git commit and waits ~3 min"
     /*
      git_commit = sh (
@@ -23,8 +15,11 @@ def test( ) {
     */
     
     echo "Starts build_test.sh..."
-    sh 'build_test.sh' // bogus test script
-    echo 'After start build_test.sh'
+    tested= sh (
+       script: 'build_test.sh', // bogus test script
+       returnStdout: true
+    ).trim()
+    echo 'After start build_test.sh: $tested'
     sleep(3)
     echo "Stop"
 
@@ -67,7 +62,7 @@ def branch
 
 stage('Prepare') {
     
-    echo 'Stage Prepare  ' // echo stage name
+    echo 'Stage Prepare : checkout scm ' // echo stage name
    scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
    commitHash = scmVars.GIT_COMMIT
     
@@ -97,7 +92,7 @@ stage ('Merge'){   //add branch names as variable
 git checkout feature
 git merge master
 ====
-You can either git merge master or git rebase master.
+"...You can either git merge master or git rebase master." //??
 */
 
 /* Should I try this out insted? 
@@ -109,7 +104,6 @@ You can either git merge master or git rebase master.
     failFast: true|false
 */
 
-//sh 'printenv'
 def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
 def process = cmd.execute()
 def stdOut = process.inputStream.text
@@ -121,7 +115,6 @@ echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to d
 echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
 //if ($branch == 'master') 
-if( 1 == 1)  
 {
    echo 'branch - master'
    //sh 'git checkout feature'
@@ -130,40 +123,40 @@ if( 1 == 1)
    def b = new StringBuffer()
    proc.consumeProcessErrorStream(b)
 
-  println proc.text
-  println b.toString()
-    // FOR DEBUG ONLY 
-    test()
-    //end of FOR DEBUG ONLY
+  println proc.text   
+  println b.toString() //error message if any
 
    //sh 'git merge master'
    //def statusCode = sh 'git merge master', returnStatus:true
    proc = 'git merge master'
    proc.consumeProcessErrorStream(b)
    println proc.text
-    println b.toString()
+   println b.toString()
 
    def statusCode = 0 //default
-   if (statusCode !=0 ){
+   if (statusCode !=0 ){ 
       //if merge failed 
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
-   }
-   else {
-        //sh 'git commit -am "Merged master branch to feature'
-            git_merge = sh (
+    }
+      //sh 'git commit -am "Merged master branch to feature'
+       git_merge_commit = sh (
        script: 'git commit -am "Merged master branch to feature',
        returnStdout: true
-   ).trim()
+       ).trim()
 
-   println ("Merge result " + git_merge)
+   println ("Merge result " + git_merge_commit)
 
         test() //custom test to run
-        if (isThereChangeInMaster()){
+
+        if (isThereChangeInMaster()){ // if master has been changed during the run, runs again (again, merge from master, and again, fake "test") - should be function/method here
            sh "git push origin master"
+
         }
 
-  }
+  
 }
 }
+
+
 
 } 
