@@ -5,6 +5,7 @@ node ('master'){ // node/agent
 def commit_id
  def scmVars 
   def commitHash
+  def branch
 
 stage('Prepare') {
     
