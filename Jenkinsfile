@@ -53,7 +53,8 @@ You can either git merge master or git rebase master.
 
 // if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
-   sh 'git checkout feature'
+   //sh 'git checkout feature'
+   "git checkout feature".execute().text
  
    //sh 'git merge master'
    def statusCode = sh 'git merge master', returnStatus:true
