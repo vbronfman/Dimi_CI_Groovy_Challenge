@@ -1,4 +1,4 @@
-#!groovy
+#!/usr/bin/env groovy
 // Jenkinsfile (Scripted Pipeline)
 node ('master'){ // node/agent
 
@@ -54,7 +54,7 @@ def process = cmd.execute()
 def stdOut = process.inputStream.text
 def stdErr = process.errorStream.text
 
-echo "Output of '/bin/sh',  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
+echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
 
 def printout = "printenv".execute().text
 echo "out=" + printout
@@ -70,6 +70,9 @@ echo "out=" + printout
 
   println proc.text
   println b.toString()
+    // FOR DEBUG ONLY 
+    test()
+    //end of FOR DEBUG ONLY
     
    //sh 'git merge master'
    //def statusCode = sh 'git merge master', returnStatus:true
@@ -100,6 +103,7 @@ echo "out=" + printout
   }
 //}
 
+/*
 // This limits build concurrency to 1 per branch
 //  properties([disableConcurrentBuilds()])
   stage('Build') {
@@ -109,6 +113,7 @@ echo "out=" + printout
      setBuildStatus ("Some context ", 'Checking out completed', 'SUCCESS')
 
   }
+  */
 
 }
 def test() {
