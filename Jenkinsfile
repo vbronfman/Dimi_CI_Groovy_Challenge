@@ -1,12 +1,15 @@
 #!/usr/bin/env groovy
 // Jenkinsfile (Scripted Pipeline)
-
+// So far it fails upon fatal: Not a git repository (or any of the parent directories): .git
+// There is no implementation of  :
+//            if master has been changed during the run, runs again (again, merge from master, and again, fake "test") 
+//            If you trigger it on 2 concurrent commits which do not lead to merge conflict, I expect at least one of the two commits to be tested twice (having at least 2 merges from master). Under no circumstances I can expect master branch to be updated with an untested commit
+//            If you trigger it on 2 concurrent commits which present merge conflict one with the other I expect it to fail on one of the pipelines
 def commitHash
 
-def test( ) { //prints the hash of the current git commit and waits ~3 min It is expected to always pass 
-    echo "Start test "
-    
-    echo "prints the hash of the current git commit and waits ~3 min"
+def test() { //prints the hash of the current git commit and waits ~3 min It is expected to always pass 
+    echo "DEBUG Start test "
+    echo "DEBUG prints the hash of the current git commit and waits ~3 min"
     /*
      git_commit = sh (
         script: 'git rev-parse HEAD',
@@ -14,16 +17,16 @@ def test( ) { //prints the hash of the current git commit and waits ~3 min It is
     ).trim()
     */
     
-    echo "Starts build_test.sh..."
+    echo "DEBUG Starts build_test.sh..."
     tested= sh (
        script: './build_test.sh', // bogus test script
        returnStdout: true
     ).trim()
     echo 'After start build_test.sh: $tested'
     sleep(3)
-    echo "Stop"
+    echo "DEBUG finish"
 
-    //return 0
+    return true 
 }
 
 def isThereChangeInMaster(){
@@ -42,16 +45,16 @@ def isThereChangeInMaster(){
  }
  */
   //seems way simpler 
-  def check = "Your branch is up to date with 'origin/main'"
+  def check = "Your branch is up to date with " //'origin/main'"
   def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}' //doesn't work
 
   //if (sh 'git diff origin/master'){ //main  git status -uno
   if ($result){ //main  git status -uno
    // 
-    return 0
+    return false
   }
   else {
-    return 1
+    return true
   }
 }
 
@@ -109,13 +112,13 @@ def process = cmd.execute()
 def stdOut = process.inputStream.text
 def stdErr = process.errorStream.text
 
-echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
+echo "DEBUG Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
 
 //def printout = "printenv".execute().text // +
-echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
+echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
 //if ($branch == 'master') 
-   echo 'branch - master'
+   echo 'DEBUG branch - $branch'
    //sh 'git checkout feature'
    //'git checkout feature'.execute().text
    def proc = "git checkout feature".execute()
@@ -145,12 +148,13 @@ echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
    println ("Merge result " + git_merge_commit)
 
-        test() //custom test to run
+      if (test() ) {//custom test to run
 
         if (isThereChangeInMaster()){ // if master has been changed during the run, runs again (again, merge from master, and again, fake "test") - should be function/method here
            sh "git push origin master"
 
         }
+      }
 }
 
 
