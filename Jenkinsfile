@@ -5,10 +5,61 @@ def commitHash
 
 node ('master'){ // node/agent
 
+
+
 def commit_id
- def scmVars 
-  
-  def branch
+def scmVars 
+def branch
+
+def test( ) {
+    echo "Start test "
+    //prints the hash of the current git commit and waits ~3 min
+    echo "prints the hash of the current git commit and waits ~3 min"
+    /*
+     git_commit = sh (
+        script: 'git rev-parse HEAD',
+        returnStdout: true
+    ).trim()
+    */
+    
+    echo "Starts build_test.sh..."
+    sh 'build_test.sh' // bogus test script
+    echo 'After start build_test.sh'
+    sleep(3)
+    echo "Stop"
+
+    //return 0
+}
+
+def isThereChangeInMaster(){
+  //def cmd = ['/bin/sh',  'git',  'status', '-uno' | grep "Your branch is up to date with 'origin/main'" ']
+   //some regex here? 
+   /*
+   cmd.execute().with{
+   def output = new StringWriter()
+   def error = new StringWriter()
+   //wait for process ended and catch stderr and stdout.
+   it.waitForProcessOutput(output, error)
+   //check there is no error
+   println "error=$error"
+   println "output=$output"
+   println "code=${it.exitValue()}"
+ }
+ */
+  //seems way simpler 
+  def check = "Your branch is up to date with 'origin/main'"
+  def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}' //doesn't work
+
+  //if (sh 'git diff origin/master'){ //main  git status -uno
+  if ($result){ //main  git status -uno
+   // 
+    return 0
+  }
+  else {
+    return 1
+  }
+}
+
 
 stage('Prepare') {
     
@@ -109,68 +160,6 @@ if( 1 == 1)
 
   }
 }
-}
-
-/*
-// This limits build concurrency to 1 per branch
-//  properties([disableConcurrentBuilds()])
-  stage('Build') {
-    echo 'Building...'
-    //sh 'python --version'
-    //sh 'docker-compose -d -f ./composetest/up'
-     setBuildStatus ("Some context ", 'Checking out completed', 'SUCCESS')
-
-  }
-  */
-
-
-def test( ) {
-    echo "Start test "
-    //prints the hash of the current git commit and waits ~3 min
-    echo "prints the hash of the current git commit and waits ~3 min"
-    /*
-     git_commit = sh (
-        script: 'git rev-parse HEAD',
-        returnStdout: true
-    ).trim()
-    */
-    
-    echo "Starts build_test.sh..."
-    sh 'build_test.sh' // bogus test script
-    echo 'After start build_test.sh'
-    sleep(3)
-    echo "Stop"
-
-    //return 0
-}
-
-def isThereChangeInMaster(){
-  //def cmd = ['/bin/sh',  'git',  'status', '-uno' | grep "Your branch is up to date with 'origin/main'" ']
-   //some regex here? 
-   /*
-   cmd.execute().with{
-   def output = new StringWriter()
-   def error = new StringWriter()
-   //wait for process ended and catch stderr and stdout.
-   it.waitForProcessOutput(output, error)
-   //check there is no error
-   println "error=$error"
-   println "output=$output"
-   println "code=${it.exitValue()}"
- }
- */
-  //seems way simpler 
-  def check = "Your branch is up to date with 'origin/main'"
-  def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}' //doesn't work
-
-  //if (sh 'git diff origin/master'){ //main  git status -uno
-  if ($result){ //main  git status -uno
-   // 
-    return 0
-  }
-  else {
-    return 1
-  }
 }
 
 } 
