@@ -23,7 +23,7 @@ stage('Prepare') {
     def branch = env.BRANCH_NAME
     echo "branch $branch"
     
-  }
+}
 
 ////////////////////////////////////////////////
 stage ('Merge'){   //add branch names as variable
@@ -102,6 +102,7 @@ if (env.GIT_BRANCH == 'master') { //doesn't work
 
   }
 }
+}
 
 /*
 // This limits build concurrency to 1 per branch
@@ -114,8 +115,8 @@ if (env.GIT_BRANCH == 'master') { //doesn't work
 
   }
   */
-
 }
+
 def test() {
     echo "Start"
     //prints the hash of the current git commit and waits ~3 min
@@ -151,7 +152,7 @@ def isThereChangeInMaster(){
  */
   //seems way simpler 
   def check = "Your branch is up to date with 'origin/main'"
-  def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}'
+  def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}' //doesn't work
 
   //if (sh 'git diff origin/master'){ //main  git status -uno
   if ($result){ //main  git status -uno
@@ -161,7 +162,6 @@ def isThereChangeInMaster(){
   else {
     return 1
   }
-  
 }
 
  
