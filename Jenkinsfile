@@ -49,7 +49,12 @@ You can either git merge master or git rebase master.
 */
 
 //sh 'printenv'
-"printenv".execute().text
+//def process = cmd.execute()
+//def stdOut = process.inputStream.text
+//def stdErr = process.errorStream.text
+
+def printout = "printenv".execute().text
+echo "out=" + printout
 
 // if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
