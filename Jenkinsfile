@@ -88,7 +88,7 @@ stage('Prepare') {
     
    echo 'Stage Prepare : checkout scm ' // echo stage name
    dir('subDir') {
-    checkout scm
+    
 
    scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
    commitHash = scmVars.GIT_COMMIT
