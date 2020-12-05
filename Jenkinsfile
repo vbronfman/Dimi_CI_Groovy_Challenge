@@ -78,7 +78,7 @@ if( 1 == 1)
   println proc.text
   println b.toString()
     // FOR DEBUG ONLY 
-    test()
+    test(commitHash)
     //end of FOR DEBUG ONLY
 
    //sh 'git merge master'
@@ -124,7 +124,7 @@ if( 1 == 1)
   */
 }
 
-def test() {
+def test( ) {
     echo "Start test "
     //prints the hash of the current git commit and waits ~3 min
     echo "prints the hash of the current git commit and waits ~3 min"
@@ -135,8 +135,9 @@ def test() {
     ).trim()
     */
     
-    echo "Commit = " +  commitHash
+    echo "Starts build_test.sh..."
     sh 'build_test.sh' // bogus test script
+    echo 'After start build_test.sh'
     sleep(3)
     echo "Stop"
 
