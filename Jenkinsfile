@@ -87,13 +87,31 @@ def test() {
 }
 
 def isThereChangeInMaster(){
-  if (sh 'git diff origin/master'){ //main  git status -uno
-  //some regex here? 
-  // 
-    return 1
+  def cmd = ['/bin/sh',  'git',  'status', '-uno' | grep "Your branch is up to date with 'origin/main'"]
+   //some regex here? 
+   /*
+   cmd.execute().with{
+   def output = new StringWriter()
+   def error = new StringWriter()
+   //wait for process ended and catch stderr and stdout.
+   it.waitForProcessOutput(output, error)
+   //check there is no error
+   println "error=$error"
+   println "output=$output"
+   println "code=${it.exitValue()}"
+ }
+ */
+  //seems way simpler 
+  def check = "Your branch is up to date with 'origin/main'"
+  def result = sh ' git status -uno | grep ${check} ' // | awk -F \'"\' {\'print $2\'}'
+
+  //if (sh 'git diff origin/master'){ //main  git status -uno
+  if ($result){ //main  git status -uno
+   // 
+    return 0
   }
   else {
-    return 0
+    return 1
   }
   
 }
