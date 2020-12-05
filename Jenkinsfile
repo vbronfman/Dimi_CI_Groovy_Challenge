@@ -152,9 +152,9 @@ echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
    //def statusCode = sh 'git merge master', returnStatus:true
    proc = ['git', 'merge', 'master']
    
-   stdOut = proc.inputStream.text
-   stdErr = proc.errorStream.text
-   def statusCode = myCmdExec (proc)
+   //stdOut = proc.inputStream.text
+   //stdErr = proc.errorStream.text
+   def statusCode = myCmdExec (proc) 
    
    if (statusCode !=0 ){ 
       //if merge failed 
