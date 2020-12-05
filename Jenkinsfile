@@ -7,8 +7,8 @@ def commit_id
 stage('Prepare') {
     
     echo 'Stage Prepare  ' // echo stage name
-    checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
-    
+    def scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
+    def commitHash = scmVars.GIT_COMMIT
     
     // checkout changelog: false, poll: false, 
             // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
@@ -56,10 +56,10 @@ def stdErr = process.errorStream.text
 
 echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
 
-def printout = "printenv".execute().text
-echo "out=" + printout
+//def printout = "printenv".execute().text // +
+echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
-// if (env.BRANCH_NAME == 'master') { //doesn't work
+if (env.GIT_BRANCH == 'master') { //doesn't work
 
    echo 'branch - master'
    //sh 'git checkout feature'
@@ -73,7 +73,7 @@ echo "out=" + printout
     // FOR DEBUG ONLY 
     test()
     //end of FOR DEBUG ONLY
-    
+
    //sh 'git merge master'
    //def statusCode = sh 'git merge master', returnStatus:true
    proc = 'git merge master'
@@ -120,11 +120,14 @@ def test() {
     echo "Start"
     //prints the hash of the current git commit and waits ~3 min
     echo "prints the hash of the current git commit and waits ~3 min"
+    /*
      git_commit = sh (
         script: 'git rev-parse HEAD',
         returnStdout: true
     ).trim()
-    echo "Commit = " + git_commit
+    */
+    
+    echo "Commit = " +  commitHash
     sleep(3)
     echo "Stop"
 
