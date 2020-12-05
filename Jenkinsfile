@@ -1,6 +1,6 @@
 #!groovy
 // Jenkinsfile (Scripted Pipeline)
-node { // node/agent
+node ('master'){ // node/agent
 
 def commit_id
 
