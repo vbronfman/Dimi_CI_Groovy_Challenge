@@ -86,7 +86,7 @@ if (env.GIT_BRANCH == 'master') { //doesn't work
       //if merge failed 
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
    }
-   //else {
+   else {
         //sh 'git commit -am "Merged master branch to feature'
             git_merge = sh (
        script: 'git commit -am "Merged master branch to feature',
@@ -101,7 +101,7 @@ if (env.GIT_BRANCH == 'master') { //doesn't work
         }
 
   }
-//}
+}
 
 /*
 // This limits build concurrency to 1 per branch
