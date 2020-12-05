@@ -19,8 +19,8 @@ stage('Prepare') {
    
     //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
     //commit_id = readFile('.git/commit-id').trim()
-    echo "Commit ID = $commit_id"
-    def branch = env.BRANCH_NAME
+    echo "Commit ID = $commitHash"
+    def branch = scmVars.BRANCH_NAME
     echo "branch $branch"
     
 }
