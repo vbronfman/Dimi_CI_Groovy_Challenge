@@ -78,7 +78,7 @@ if( 1 == 1)
   println proc.text
   println b.toString()
     // FOR DEBUG ONLY 
-    test(commitHash)
+    test()
     //end of FOR DEBUG ONLY
 
    //sh 'git merge master'
@@ -122,7 +122,7 @@ if( 1 == 1)
 
   }
   */
-}
+
 
 def test( ) {
     echo "Start test "
@@ -173,4 +173,4 @@ def isThereChangeInMaster(){
   }
 }
 
- 
+} 
