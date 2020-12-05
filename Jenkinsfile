@@ -76,6 +76,7 @@ You can either git merge master or git rebase master.
 
   }
 
+}
 def test() {
     echo "Start"
     //prints the hash of the current git commit and waits ~3 min
