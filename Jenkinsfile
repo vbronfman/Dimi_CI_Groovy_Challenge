@@ -17,8 +17,8 @@ stage('Prepare') {
                   // submoduleCfg: [], 
                   // userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
    
-    sh "git rev-parse --short HEAD > .git/commit-id"                        
-    commit_id = readFile('.git/commit-id').trim()
+    //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
+    //commit_id = readFile('.git/commit-id').trim()
     echo 'Commit ID = $commit_id'
     
   }
