@@ -87,7 +87,7 @@ def test() {
 }
 
 def isThereChangeInMaster(){
-  def cmd = ['/bin/sh',  'git',  'status', '-uno' | grep "Your branch is up to date with 'origin/main'"]
+  //def cmd = ['/bin/sh',  'git',  'status', '-uno' | grep "Your branch is up to date with 'origin/main'" ']
    //some regex here? 
    /*
    cmd.execute().with{
