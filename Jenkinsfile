@@ -23,7 +23,7 @@ stage('Prepare') {
     //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
     //commit_id = readFile('.git/commit-id').trim()
     echo "Commit ID = $commitHash"
-    def branch = scmVars.GIT_BRANCH
+    branch = scmVars.GIT_BRANCH
     echo "branch $branch"
     
 }
@@ -62,8 +62,9 @@ echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to d
 //def printout = "printenv".execute().text // +
 echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
-if ($branch == 'master') {  
-
+//if ($branch == 'master') 
+if( 1 == 1)  
+{
    echo 'branch - master'
    //sh 'git checkout feature'
    //'git checkout feature'.execute().text
