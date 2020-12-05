@@ -14,7 +14,7 @@
 def commitHash
 
 
-def myCmdExec (String[] cmd)
+int myCmdExec (String[] cmd)
 {
   //def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
   def process = cmd.execute()
@@ -128,7 +128,7 @@ git merge master
 
 
 def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
-def exit_status=	myCmdExec(cmd)
+def exit_status=	myCmdExec (cmd)
 
 
 echo "DEBUG Output of myCmdExec '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr + "exit:" + exit_status
