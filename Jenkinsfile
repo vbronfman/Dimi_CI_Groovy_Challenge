@@ -87,8 +87,13 @@ node ('master'){ // node/agent
 stage('Prepare') {
     
    echo 'Stage Prepare : checkout scm ' // echo stage name
+   dir('subDir') {
+    checkout scm
+
    scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
    commitHash = scmVars.GIT_COMMIT
+
+   } // dir
     
     // checkout changelog: false, poll: false, 
             // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
@@ -101,12 +106,7 @@ stage('Prepare') {
     //commit_id = readFile('.git/commit-id').trim()
     echo "Commit ID = $commitHash"
     branch = scmVars.GIT_BRANCH
-    echo "branch $branch"
-    //for debug only
-    def cmd = ['git',  'status', '-uno', '|', 'grep', 'Your branch is up to date with ']
-def exit_status=	myCmdExec (cmd)
-//end of for debug only
-    
+    echo "branch $branch"    
 }
 
 ////////////////////////////////////////////////
@@ -132,7 +132,7 @@ git merge master
     failFast: true|false
 */
 
-
+dir('subDir') {
 def cmd = ['git',  'status', '-uno', '|', 'grep', 'Your branch is up to date with ']
 def exit_status=	myCmdExec (cmd)
 
@@ -181,6 +181,6 @@ echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
       }
 }
 
-
+}
 
 } 
