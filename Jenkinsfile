@@ -41,6 +41,7 @@ def test() { //prints the hash of the current git commit and waits ~3 min It is 
        script: './build_test.sh', // bogus test script
        returnStdout: true
     ).trim()
+
     echo 'After start build_test.sh: $tested'
     sleep(3)
     echo "DEBUG finish"
@@ -77,14 +78,15 @@ def isThereChangeInMaster(){
   }
 }
 
+///////////////// main /////////////////////
 node ('master'){ // node/agent
-def commit_id
-def scmVars 
-def branch
+  def commit_id
+  def scmVars 
+  def branch
 
 stage('Prepare') {
     
-    echo 'Stage Prepare : checkout scm ' // echo stage name
+   echo 'Stage Prepare : checkout scm ' // echo stage name
    scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
    commitHash = scmVars.GIT_COMMIT
     
@@ -130,8 +132,7 @@ git merge master
 def cmd = ['git',  'status', '-uno', '|', 'grep', 'Your branch is up to date with ']
 def exit_status=	myCmdExec (cmd)
 
-
-echo "DEBUG Output of myCmdExec '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr + "exit:" + exit_status
+echo "DEBUG Output of myCmdExec exit:" + exit_status
 
 //def printout = "printenv".execute().text // +
 echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
@@ -142,22 +143,19 @@ echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
    //'git checkout feature'.execute().text
    def proc = "git checkout feature".execute()
    stdOut = proc.inputStream.text
-   stdErr = proc.errorStream.text
-
+   stdErr = proc.errorStream.text //error message if any
+    echo "DEBUG stdOut=" + stdOut + " stdErr=" + stdErr
    //def b = new StringBuffer()
    //proc.consumeProcessErrorStream(b)
 
-  println stdOut
-  println stdErr //error message if any
-
    //sh 'git merge master'
    //def statusCode = sh 'git merge master', returnStatus:true
-   proc = 'git merge master'
+   proc = ['git', 'merge', 'master']
    
    stdOut = proc.inputStream.text
    stdErr = proc.errorStream.text
-
-   def statusCode = 0 //default
+   def statusCode = myCmdExec (proc)
+   
    if (statusCode !=0 ){ 
       //if merge failed 
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
