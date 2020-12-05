@@ -54,7 +54,7 @@ You can either git merge master or git rebase master.
 // if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
    //sh 'git checkout feature'
-   "git checkout feature".execute().text
+   git 'git checkout feature' //".execute().text
  
    //sh 'git merge master'
    def statusCode = sh 'git merge master', returnStatus:true
@@ -63,7 +63,8 @@ You can either git merge master or git rebase master.
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
    }
    //else {
-        sh 'git commit -am "Merged master branch to feature'
+        //sh 'git commit -am "Merged master branch to feature'
+        git 'git commit -am "Merged master branch to feature'
 
         test() //custom test to run
         if (isThereChangeInMaster()){
