@@ -9,149 +9,93 @@ stage('Prepare') {
     echo 'Stage Prepare  ' // echo stage name
     checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
     
-    checkout changelog: false, poll: false, 
-            scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
-                  doGenerateSubmoduleConfigurations: false, 
-                  extensions: [], 
-                  submoduleCfg: [], 
-                  userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
+    
+    // checkout changelog: false, poll: false, 
+            // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
+                  // doGenerateSubmoduleConfigurations: false, 
+                  // extensions: [], 
+                  // submoduleCfg: [], 
+                  // userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
    
     sh "git rev-parse --short HEAD > .git/commit-id"                        
     commit_id = readFile('.git/commit-id').trim()
     
   }
 
-stage ('Merge'){ //add branch names as variable
+////////////////////////////////////////////////
+stage ('Merge'){   //add branch names as variable
+  echo 'Stage Merge:  merge master into feature'
+
  //  sh 'git tag -a tagName -m "Your tag comment"'
-   sh 'git merge develop'
-   sh 'git commit -am "Merged develop branch to master'
-   
-   //if failed 
-   error("Build failed because of this and that..") // fail job if merge failed
-   
-   
-   sh "git push origin master"
-   
-   
-   error("Build failed because of this and that..") //Actively fail current pipeline job
-}
+ /*
+ How do we merge the master branch into the feature branch? Easy:
 
-
-   stage('test') {
-     nodejs(nodeJSInstallationName: 'nodejs') {
-       sh 'npm install --only=dev'
-       sh 'npm test'
-     }
-   }
-   stage('docker build/push') {
-     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-       def app = docker.build("wardviaene/docker-nodejs-demo:${commit_id}", '.').push()
-     }
-   }
-//}
-
-
-
-  // This limits build concurrency to 1 per branch
-//  properties([disableConcurrentBuilds()])
-  
-   if (env.BRANCH_NAME == 'master') {
-            echo 'I only execute on the master branch'
-        } else {
-            echo 'I execute elsewhere'
-        }
-    }
-    
- 
-  stage ('Merge'){
-      echo 'Merge master into feature'
- }
-  
-  
-  stage('Build') {
-    echo 'Building...'
-    //sh 'python --version'
-    //sh 'docker-compose -d -f ./composetest/up'
-  }
-  
-  stage('Test') {
-      withEnv(['DOCKER_HOST=tcp://host.docker.internal:2375', 'PATH+EXTRA=/var/jenkins_home/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/dockerjenkins/bin']) {
-sh 'build_test.sh'
-      //sh 'docker-compose -f ./composetest/docker-compose.yml up -d --build'
-      //sh 'docker-compose -f ./composetest/docker-compose.yml exec web python app.test.py'
-      }
-  }
-  
-//}
-/*
-def commit_id
-stage('Prepare') {
-    echo 'Prepare $GLOBAL_STAGE_NAME name' // echo stage name
-    checkout scm // is this any one better than next one? 
-    
-    checkout changelog: false, poll: false, 
-            scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
-                  doGenerateSubmoduleConfigurations: false, 
-                  extensions: [], 
-                  submoduleCfg: [], 
-                  userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
-   
-    sh "git rev-parse --short HEAD > .git/commit-id"                        
-    commit_id = readFile('.git/commit-id').trim()
-    
-  }
-
-stage ('Merge'){ //add branch names as variable
-   sh 'git tag -a tagName -m "Your tag comment"'
-   sh 'git merge develop'
-   sh 'git commit -am "Merged develop branch to master'
-   sh "git push origin master"
-}
-   stage('test') {
-     nodejs(nodeJSInstallationName: 'nodejs') {
-       sh 'npm install --only=dev'
-       sh 'npm test'
-     }
-   }
-   stage('docker build/push') {
-     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-       def app = docker.build("wardviaene/docker-nodejs-demo:${commit_id}", '.').push()
-     }
-   }
-}
-
-// Jenkinsfile (Scripted Pipeline)
-node { // node/agent
-
-  // This limits build concurrency to 1 per branch
-//  properties([disableConcurrentBuilds()])
-  
-   if (env.BRANCH_NAME == 'master') {
-            echo 'I only execute on the master branch'
-        } else {
-            echo 'I execute elsewhere'
-        }
-    }
-    
- 
-  stage ('Merge'){
-      echo 'Merge master into feature'
- }
-  
-  
-  stage('Build') {
-    echo 'Building...'
-    //sh 'python --version'
-    //sh 'docker-compose -d -f ./composetest/up'
-  }
-  
-  stage('Test') {
-      withEnv(['DOCKER_HOST=tcp://host.docker.internal:2375', 'PATH+EXTRA=/var/jenkins_home/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/dockerjenkins/bin']) {
-sh 'build_test.sh'
-      //sh 'docker-compose -f ./composetest/docker-compose.yml up -d --build'
-      //sh 'docker-compose -f ./composetest/docker-compose.yml exec web python app.test.py'
-      }
-  }
-  
-}
+git checkout feature
+git merge master
+====
+You can either git merge master or git rebase master.
 */
+
+/* Should I try this out insted? 
+  parallel firstBranch: {
+        // do something
+    }, secondBranch: {
+        // do something else
+    },
+    failFast: true|false
+*/
+
+ if (env.BRANCH_NAME == 'master') {
+   sh 'git checkout feature'
+ 
+   //sh 'git merge master'
+   def statusCode = sh 'git merge master', returnStatus:true
+   if (statusCode !=0 ){
+      //if merge failed 
+      error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
+   }
+   else {
+        sh 'git commit -am "Merged master branch to feature'
+
+        test() //custom test to run
+        if (isThereChangeInMaster()){
+           sh "git push origin master"
+        }
+
+   }
+ }
+}
+
+// This limits build concurrency to 1 per branch
+//  properties([disableConcurrentBuilds()])
+  stage('Build') {
+    echo 'Building...'
+    //sh 'python --version'
+    //sh 'docker-compose -d -f ./composetest/up'
+     setBuildStatus ("Some context ", 'Checking out completed', 'SUCCESS')
+
+  }
+
+def test() {
+    echo "Start"
+    //prints the hash of the current git commit and waits ~3 min
+    echo "prints the hash of the current git commit and waits ~3 min"
+    sleep(3)
+    echo "Stop"
+
+    //return 0
+}
+
+def isThereChangeInMaster(){
+  if (sh 'git diff origin/master'){ //main  git status -uno
+  //some regex here? 
+  // 
+    return 1
+  }
+  else {
+    return 0
+  }
+  
+}
+
+ 
