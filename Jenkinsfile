@@ -16,7 +16,7 @@ def test( ) { //prints the hash of the current git commit and waits ~3 min It is
     
     echo "Starts build_test.sh..."
     tested= sh (
-       script: 'build_test.sh', // bogus test script
+       script: './build_test.sh', // bogus test script
        returnStdout: true
     ).trim()
     echo 'After start build_test.sh: $tested'
