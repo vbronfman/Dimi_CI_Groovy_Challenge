@@ -1,11 +1,30 @@
 #!/usr/bin/env groovy
 // Jenkinsfile (Scripted Pipeline)
-// So far it fails upon fatal: Not a git repository (or any of the parent directories): .git
-// There is no implementation of  :
+
+// Development status:
+//     So far it fails upon fatal: Not a git repository (or any of the parent directories): .git
+// Backlog:
+//     There is no implementation of  :
 //            if master has been changed during the run, runs again (again, merge from master, and again, fake "test") 
 //            If you trigger it on 2 concurrent commits which do not lead to merge conflict, I expect at least one of the two commits to be tested twice (having at least 2 merges from master). Under no circumstances I can expect master branch to be updated with an untested commit
 //            If you trigger it on 2 concurrent commits which present merge conflict one with the other I expect it to fail on one of the pipelines
+//
+//  Disclaimer: any validations, exception handlers and so further are omitted for simlicity sake
+
 def commitHash
+
+
+def myCmdExec (String cmd)
+{
+  //def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
+  def process = cmd.execute()
+  def stdOut = process.inputStream.text
+  def stdErr = process.errorStream.text
+  def exit_status=	exitValue() //returns int
+
+      echo "DEBUG Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
+  return process.exitValue()
+}
 
 def test() { //prints the hash of the current git commit and waits ~3 min It is expected to always pass 
     echo "DEBUG Start test "
@@ -107,12 +126,12 @@ git merge master
     failFast: true|false
 */
 
-def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
-def process = cmd.execute()
-def stdOut = process.inputStream.text
-def stdErr = process.errorStream.text
 
-echo "DEBUG Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
+def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
+def exit_status=	myCmdExec(cmd)
+
+
+echo "DEBUG Output of myCmdExec '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr + "exit:" + exit_status
 
 //def printout = "printenv".execute().text // +
 echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
@@ -122,18 +141,21 @@ echo "DEBUG scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
    //sh 'git checkout feature'
    //'git checkout feature'.execute().text
    def proc = "git checkout feature".execute()
-   def b = new StringBuffer()
-   proc.consumeProcessErrorStream(b)
+   stdOut = proc.inputStream.text
+   stdErr = proc.errorStream.text
 
-  println proc.text   
-  println b.toString() //error message if any
+   //def b = new StringBuffer()
+   //proc.consumeProcessErrorStream(b)
+
+  println stdOut
+  println stdErr //error message if any
 
    //sh 'git merge master'
    //def statusCode = sh 'git merge master', returnStatus:true
    proc = 'git merge master'
-   proc.consumeProcessErrorStream(b)
-   println proc.text
-   println b.toString()
+   
+   stdOut = proc.inputStream.text
+   stdErr = proc.errorStream.text
 
    def statusCode = 0 //default
    if (statusCode !=0 ){ 
