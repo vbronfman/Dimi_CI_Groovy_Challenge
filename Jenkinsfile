@@ -48,7 +48,8 @@ You can either git merge master or git rebase master.
     failFast: true|false
 */
 
-sh 'printenv'
+//sh 'printenv'
+"printenv".execute().text
 
 // if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
