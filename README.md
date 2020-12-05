@@ -19,25 +19,12 @@ Dimi
 
 ## Usage
 
-```python
-import unittest
-import re
-from app import app
+```bash
+# bogus test prints the hash of the current git commit and waits ~3 min It is expected to always pass 
 
-class BasicTestCase(unittest.TestCase):
-    def test_home(self):
-      tester = app.test_client(self)
-      response = tester.get('/', content_type='html/text')
-      self.assertEqual(response.status_code, 200)
-      self.assertRegexpMatches(response.data, b'Hello World! I have been seen') #Hello World! I have been seen 5 times.
-    def test_other(self):
-      tester = app.test_client(self)
-      response = tester.get('a', content_type='html/text')
-      self.assertEqual(response.status_code, 404)
-      self.assertFalse(b'does not exist' in response.data)
-
-if __name__ == '__main__':
-    unittest.main()
+echo Test on commit
+echo $(git rev-parse HEAD)
+sleep ${timeout=3}
 ```
   .\Develop\Dimi_CI_Groovy_Challenge\composetest>docker-compose -f docker-compose.yml exec web python app.test.py
 *This text will be italic*
