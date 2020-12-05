@@ -49,7 +49,7 @@ You can either git merge master or git rebase master.
 */
 
 //sh 'printenv'
-def cmd = ['/bin/sh',  'git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
+def cmd = ['git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
 def process = cmd.execute()
 def stdOut = process.inputStream.text
 def stdErr = process.errorStream.text
@@ -60,19 +60,37 @@ def printout = "printenv".execute().text
 echo "out=" + printout
 
 // if (env.BRANCH_NAME == 'master') { //doesn't work
+
    echo 'branch - master'
    //sh 'git checkout feature'
-    'git checkout feature'.execute().text
- 
+   //'git checkout feature'.execute().text
+   def proc = "git checkout feature".execute()
+   def b = new StringBuffer()
+   proc.consumeProcessErrorStream(b)
+
+  println proc.text
+  println b.toString()
+    
    //sh 'git merge master'
-   def statusCode = sh 'git merge master', returnStatus:true
+   //def statusCode = sh 'git merge master', returnStatus:true
+   proc = 'git merge master'
+   proc.consumeProcessErrorStream(b)
+   println proc.text
+    println b.toString()
+
+   def statusCode = 0 //default
    if (statusCode !=0 ){
       //if merge failed 
       error("Build failed because of this and that..") // fail job if merge failed;//Actively fail current pipeline job
    }
    //else {
         //sh 'git commit -am "Merged master branch to feature'
-        'git commit -am "Merged master branch to feature'
+            git_merge = sh (
+       script: 'git commit -am "Merged master branch to feature',
+       returnStdout: true
+   ).trim()
+
+   println ("Merge result " + git_merge)
 
         test() //custom test to run
         if (isThereChangeInMaster()){
@@ -97,6 +115,11 @@ def test() {
     echo "Start"
     //prints the hash of the current git commit and waits ~3 min
     echo "prints the hash of the current git commit and waits ~3 min"
+     git_commit = sh (
+        script: 'git rev-parse HEAD',
+        returnStdout: true
+    ).trim()
+    echo "Commit = " + git_commit
     sleep(3)
     echo "Stop"
 
