@@ -49,9 +49,12 @@ You can either git merge master or git rebase master.
 */
 
 //sh 'printenv'
-//def process = cmd.execute()
-//def stdOut = process.inputStream.text
-//def stdErr = process.errorStream.text
+def cmd = ['/bin/sh',  'git',  'status', '-uno', '|', 'grep', "Your branch is up to date with 'origin/main'"]
+def process = cmd.execute()
+def stdOut = process.inputStream.text
+def stdErr = process.errorStream.text
+
+echo "Output of '/bin/sh',  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
 
 def printout = "printenv".execute().text
 echo "out=" + printout
@@ -59,7 +62,7 @@ echo "out=" + printout
 // if (env.BRANCH_NAME == 'master') { //doesn't work
    echo 'branch - master'
    //sh 'git checkout feature'
-   git 'git checkout feature' //".execute().text
+    'git checkout feature'.execute().text
  
    //sh 'git merge master'
    def statusCode = sh 'git merge master', returnStatus:true
@@ -69,7 +72,7 @@ echo "out=" + printout
    }
    //else {
         //sh 'git commit -am "Merged master branch to feature'
-        git 'git commit -am "Merged master branch to feature'
+        'git commit -am "Merged master branch to feature'
 
         test() //custom test to run
         if (isThereChangeInMaster()){
