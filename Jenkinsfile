@@ -3,12 +3,14 @@
 node ('master'){ // node/agent
 
 def commit_id
+ def scmVars 
+  def commitHash
 
 stage('Prepare') {
     
     echo 'Stage Prepare  ' // echo stage name
-    def scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
-    def commitHash = scmVars.GIT_COMMIT
+   scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
+   commitHash = scmVars.GIT_COMMIT
     
     // checkout changelog: false, poll: false, 
             // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
@@ -20,7 +22,7 @@ stage('Prepare') {
     //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
     //commit_id = readFile('.git/commit-id').trim()
     echo "Commit ID = $commitHash"
-    def branch = scmVars.BRANCH_NAME
+    def branch = scmVars.GIT_BRANCH
     echo "branch $branch"
     
 }
@@ -59,7 +61,7 @@ echo "Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to d
 //def printout = "printenv".execute().text // +
 echo "scmVars.GIT_BRANCH =" + scmVars.GIT_BRANCH
 
-if (env.GIT_BRANCH == 'master') { //doesn't work
+if ($branch == 'master') {  
 
    echo 'branch - master'
    //sh 'git checkout feature'
@@ -129,6 +131,7 @@ def test() {
     */
     
     echo "Commit = " +  commitHash
+    sh 'build_test.sh' // bogus test script
     sleep(3)
     echo "Stop"
 
