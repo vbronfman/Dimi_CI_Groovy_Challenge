@@ -3,13 +3,13 @@
 
 def commitHash
 
-node ('master'){ // node/agent
 
 
 
-def commit_id
-def scmVars 
-def branch
+
+
+
+
 
 def test( ) {
     echo "Start test "
@@ -60,6 +60,10 @@ def isThereChangeInMaster(){
   }
 }
 
+node ('master'){ // node/agent
+def commit_id
+def scmVars 
+def branch
 
 stage('Prepare') {
     
