@@ -19,7 +19,9 @@ stage('Prepare') {
    
     //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
     //commit_id = readFile('.git/commit-id').trim()
-    echo 'Commit ID = $commit_id'
+    echo "Commit ID = $commit_id"
+    def branch = env.BRANCH_NAME
+    echo "branch $branch"
     
   }
 
@@ -45,6 +47,8 @@ You can either git merge master or git rebase master.
     },
     failFast: true|false
 */
+
+sh 'printenv'
 
  if (env.BRANCH_NAME == 'master') {
    echo 'branch - master'
