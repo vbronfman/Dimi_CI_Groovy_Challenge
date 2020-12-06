@@ -87,22 +87,21 @@ node ('master'){ // node/agent
 stage('Prepare') {
     
    echo 'Stage Prepare : checkout scm ' // echo stage name
-   dir('subDir') {
+   dir('subDir') { // trying to use dedicated dir to avoid "Not a git repository" in Merge stage
     
-
    scmVars =  checkout scm // is this any one better than next one? - ERROR: ‘checkout scm’ is only available when using “Multibranch Pipeline” or “Pipeline script from SCM”
    commitHash = scmVars.GIT_COMMIT
 
+   // checkout changelog: false, poll: false, 
+        // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
+              // doGenerateSubmoduleConfigurations: false, 
+              // extensions: [], 
+              // submoduleCfg: [], 
+              // userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
+
    } // dir
     
-    // checkout changelog: false, poll: false, 
-            // scm: [$class: 'GitSCM', branches: [[name: '*/main']], 
-                  // doGenerateSubmoduleConfigurations: false, 
-                  // extensions: [], 
-                  // submoduleCfg: [], 
-                  // userRemoteConfigs: [[url: 'https://github.com/vbronfman/Dimi_CI_Groovy_Challenge.git']]]
-   
-    //sh "git rev-parse --short HEAD > .git/commit-id"  //hangs up entire build 
+    //sh "git rev-parse --short HEAD > .git/commit-id"  //doesn't work for me - hangs up entire build 
     //commit_id = readFile('.git/commit-id').trim()
     echo "Commit ID = $commitHash"
     branch = scmVars.GIT_BRANCH
@@ -113,10 +112,8 @@ stage('Prepare') {
 stage ('Merge'){   //add branch names as variable
   echo 'Stage Merge:  merge master into feature'
 
- //  sh 'git tag -a tagName -m "Your tag comment"'
- /*
- How do we merge the master branch into the feature branch? Easy:
-
+/*
+How do we merge the master branch into the feature branch? Easy:
 git checkout feature
 git merge master
 ====
@@ -132,7 +129,7 @@ git merge master
     failFast: true|false
 */
 
-dir('subDir') {
+dir('subDir') {  // trying to use dedicated dir to avoid "Not a git repository"
 def cmd = ['git',  'status', '-uno', '|', 'grep', 'Your branch is up to date with ']
 def exit_status=	myCmdExec (cmd)
 
