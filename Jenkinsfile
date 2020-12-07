@@ -11,7 +11,7 @@
 //
 //  Disclaimer: any validations, exception handlers and so further are omitted for simlicity sake
 
-def commitHash
+def commitHash //defined globaly to make visible over stages
 
 
 def myCmdExec (cmd)
@@ -20,9 +20,8 @@ def myCmdExec (cmd)
   def process = cmd.execute()
   def stdOut = process.inputStream.text
   def stdErr = process.errorStream.text
-  //def exit_status=	exitValue() //returns int
-
-      echo "DEBUG Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
+  
+  echo "DEBUG Output of '  'git',  'status', '-uno', '|', 'grep', Your branch is up to date with 'origin/main' " + stdOut + stdErr
   return process.exitValue()
 }
 
